@@ -52,11 +52,11 @@ export const chatSlice = createSlice({
         sendMessageSuccessAction: (state, { payload }) => {
             state.isLoading=false;
             if(!state.messages) state.messages = [];
-            if(payload.attachments.length > 0){
-                if(!state.attachments) state.attachments = [];
-                state.attachments = state.attachments.concat(payload.attachments);
-                payload.attachments = payload.attachments.map(x => x.id);
-            }
+            // if(payload.attachments && payload.attachments.length > 0){
+            //     if(!state.attachments) state.attachments = [];
+            //     state.attachments = state.attachments.concat(payload.attachments);
+            //     payload.attachments = payload.attachments.map(x => x.id);
+            // }
             state.messages.push(payload);
             state.tempMedia = [];
             state.errors="";

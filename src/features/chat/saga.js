@@ -2,6 +2,8 @@ import {put, select, takeLatest} from "redux-saga/effects";
 import {chatSlice} from "./reducer";
 import {request} from "../../utils/request";
 import {API_BASE_URL} from "../../env";
+import {messageModel} from "./model";
+import {selectFirebaseToken} from "../notifications/selectors";
 // import {memberModel, messageModel} from "../forum/model";
 // import {mediaUpload, uploadMedia} from "../media/saga";
 // import {selectRolData} from "../singleRol/selector";
@@ -19,22 +21,16 @@ function* initChat({payload}){
 function* sendMessage({payload}) {
     try {
         if(payload) {
+            const firebaseToken = yield select(selectFirebaseToken);
             const message = {
                 message: payload,
+                firebaseToken,
             };
-            const response = yield request(`${API_BASE_URL}/api/chats/messages`, "POST", message).then((data) => data);
+            const response = yield request(`/api/chats/messages`, "POST", message).then((data) => data);
 
             if (response.status === 200) {
-
-                // const members = yield select(selectChatMembers);
-                // const newMessage = messageModel(response.data, members);
-                //
-                // yield put(chatSlice.actions.sendMessageSuccessAction(newMessage));
-                //
-                // if(mediaIdList.length > 0) {
-                //     // increase attachment count in order to signal the refresh of the rol attachments list
-                //     yield put(singleRolSlice.actions.increaseChatAttachmentCountAction());
-                // }
+                const newMessage = messageModel(response.data);
+                yield put(chatSlice.actions.sendMessageSuccessAction(newMessage));
             }
         }
     } catch (error) {

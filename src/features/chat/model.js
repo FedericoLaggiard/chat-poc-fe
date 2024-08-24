@@ -39,14 +39,14 @@ export const messageModel = (data) => {
   return {
     ...data,
     date: data.date,
-    username: data.from,
-    firstName: data.from,
-    lastName: data.from,
+    username: data.isFrom,
+    firstName: data.isFrom,
+    lastName: data.isFrom,
     avatarColor: MEMBER_AVATAR_COLORS[0],
   };
 };
 export const sendMessageModel = (data, members) => {
-  const from = members.find((x) => x.username === data.from);
+  const from = members.find((x) => x.username === data.isFrom);
 
   return {
     ...data,

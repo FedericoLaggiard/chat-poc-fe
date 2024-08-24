@@ -4,12 +4,12 @@ import { createUseStyles } from "react-jss";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Badge, Divider } from "antd";
 // import { useOnClickOutside } from "../../utils/useOnClickOutside";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   DATE_FORMAT_DD_MM_YYYY,
   HOURS_MINS_FORMAT,
 } from "../../utils/constants";
-// import { chatSlice } from "./reducer";
+import { chatSlice } from "./reducer";
 // import {
 //   selectChatAttachments,
 //   selectChatIsLoading,
@@ -25,23 +25,24 @@ import dayjs from "dayjs";
 import isLastOfGroup from "../../utils/chatUtils/isLastOfGroup";
 import isFirstOfGroup from "../../utils/chatUtils/isFirstOfGroup";
 import {messageModel} from "./model";
+import {selectChatIsLoading, selectChatMessages} from "./selectors";
+import {selectFirebaseToken} from "../notifications/selectors";
 
 const useStyles = createUseStyles(styles);
 let attachMenuOpen = false;
 
 function Chat({ unreadCount }) {
   const classes = useStyles();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const firebaseToken = useSelector(selectFirebaseToken);
   const currentUser = {
-    username: "Jhon Doe",
+    username: firebaseToken,
   };
   const [toggle, setToggle] = useState(false);
   const wrapperRef = useRef(null);
   const lastMessageRef = useRef(null);
-  // const isLoading = useSelector(selectChatIsLoading);
-  const messages = [
-    messageModel({"id":376,"from":"TSROLD01","message":"test message from chat","date":"2024-05-16 15:36:27","attachments":[]}),
-  ];//useSelector(selectChatMessages) || [];
+  //const isLoading = useSelector(selectChatIsLoading);
+  const messages = useSelector(selectChatMessages) || [];
   // const members = useSelector(selectChatMembers);
   // const attachments = useSelector(selectChatAttachments);
   // const permission = useContext(PermissionContext);
@@ -122,9 +123,9 @@ function Chat({ unreadCount }) {
   };
 
   const onMessageSend = (messageInput) => {
-    // if(messageInput) {
-    // dispatch(chatSlice.actions.sendMessageAction(messageInput));
-    // }
+    if(messageInput) {
+      dispatch(chatSlice.actions.sendMessageAction(messageInput));
+    }
   };
 
   const onAddTempMedia = (data) => {
